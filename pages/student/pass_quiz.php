@@ -3,6 +3,7 @@ require_once '../../config/database.php';
 require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
 require_once '../../classes/Question.php';
+require_once '../../classes/Quiz.php';
 
 Security::requireStudent();
 
@@ -10,6 +11,9 @@ $quizId = isset($_GET['quiz_id']) ? intval($_GET['quiz_id']) : 0;
 
 $questionObj = new Question();
 $questions = $questionObj->getAllByQuiz($quizId);
+
+$quizObj = new Quiz();
+$quizInfo = $quizObj->getById($quizId);
 
 include '../partials/header.php'; 
 include '../partials/nav_student.php'; 
@@ -32,6 +36,8 @@ include '../partials/nav_student.php';
 	@media(min-width:768px) { .options { grid-template-columns: repeat(2, 1fr); } }
 </style>
 
+<form id="quizForm" method="POST" action="../../actions/submit_quiz.php">
+<input type="hidden" name="quiz_id" value="<?= $quizId ?>">
 <div class="quiz-container">
 	<?php foreach ($questions as $index => $q): ?>
 	<div class="quiz-card" data-question="<?= $index ?>" style="<?= $index > 0 ? 'display:none;' : '' ?>">
@@ -60,6 +66,7 @@ include '../partials/nav_student.php';
 	</div>
 	<?php endforeach; ?>
 </div>
+</form>
 
 <div class="quiz-footer">
 	<button id="btn-back">← Back</button>
@@ -99,7 +106,7 @@ include '../partials/nav_student.php';
 			currentQuestion++;
 			showQuestion(currentQuestion);
 		} else {
-			alert('Quiz submitted!');
+			document.getElementById('quizForm').submit();
 		}
 	});
 

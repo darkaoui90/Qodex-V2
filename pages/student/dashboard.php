@@ -1,21 +1,18 @@
 <?php
-/**
- * Page: Gestion des Catégories
- * Permet de créer, modifier et supprimer des catégories
- */
+
 
 require_once '../../config/database.php';
 require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
 require_once '../../classes/Category.php';
 
-// Vérifier que l'utilisateur est enseignant
 
-// Variables pour la navigation
+
+
 $currentPage = 'dashboard';
 $pageTitle = 'Dashboard';
 
-// Récupérer les données
+
 $teacherId = $_SESSION['user_id'];
 $userName = $_SESSION['user_nom'];
 

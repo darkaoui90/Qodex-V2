@@ -1,7 +1,6 @@
 
-<!-- Main Content -->
 <div class="pt-16">
-    <!-- Header -->
+  
     <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <h1 class="text-4xl font-bold mb-3">Quizzes disponibles</h1>
@@ -11,7 +10,7 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- Quizzes Grid -->
+        
 
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

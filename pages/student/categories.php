@@ -5,13 +5,13 @@ require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
 require_once '../../classes/Category.php';
 
-// Vérifier que l'utilisateur est enseignant
 
-// Variables pour la navigation
+
+
 $currentPage = 'dashboard';
 $pageTitle = 'Dashboard';
 
-// Récupérer les données
+
 $teacherId = $_SESSION['user_id'];
 $userName = $_SESSION['user_nom'];
 
@@ -40,7 +40,7 @@ $regroup = $category->regroup($categories);
 
 <?php include '../partials/nav_student.php'; ?>
 
-<!-- Main Content -->
+
 <div class="pt-16">
     <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

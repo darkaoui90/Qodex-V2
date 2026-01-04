@@ -3,16 +3,18 @@
 require_once '../../config/database.php';
 require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
-require_once '../../classes/Category.php';
+require_once '../../classes/Result.php';
 
+Security::requireStudent();
 
-
-$currentPage = 'dashboard';
-$pageTitle = 'Dashboard';
-
-
-$teacherId = $_SESSION['user_id'];
+$studentId = $_SESSION['user_id'];
 $userName = $_SESSION['user_nom'];
+
+$resultObj = new Result();
+$results = $resultObj->getMyResults($studentId);
+
+$currentPage = 'results';
+$pageTitle = 'Mes Resultats';
 ?>
 
 
@@ -30,42 +32,35 @@ $userName = $_SESSION['user_nom'];
     </div>
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <!-- Historique -->
+        
         <div class="bg-white rounded-xl shadow-sm p-5">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-gray-900">Historique recent</h2>
-                <span class="text-sm text-gray-500">3 derniers quizzes</span>
+                <span class="text-sm text-gray-500"><?= min(3, count($results)) ?> derniers quizzes</span>
             </div>
             <ul class="space-y-3 text-sm">
+                <?php foreach (array_slice($results, 0, 3) as $result): 
+                    $percentage = round(($result['score'] / $result['total_questions']) * 100);
+                ?>
                 <li class="flex items-center justify-between border-b border-gray-100 pb-3">
                     <div>
-                        <p class="font-semibold text-gray-900">HTML & Semantique</p>
-                        <p class="text-gray-500">Termine le 04/01/2026</p>
+                        <p class="font-semibold text-gray-900"><?= htmlspecialchars($result['quiz_titre']) ?></p>
+                        <p class="text-gray-500">Termine le <?= date('d/m/Y', strtotime($result['created_at'])) ?></p>
                     </div>
-                    <span class="text-green-700 font-semibold">18 / 20</span>
+                    <span class="<?= $percentage >= 50 ? 'text-green-700' : 'text-red-600' ?> font-semibold"><?= $result['score'] ?> / <?= $result['total_questions'] ?></span>
                 </li>
-                <li class="flex items-center justify-between border-b border-gray-100 pb-3">
-                    <div>
-                        <p class="font-semibold text-gray-900">PHP OOP</p>
-                        <p class="text-gray-500">Termine le 03/01/2026</p>
-                    </div>
-                    <span class="text-green-700 font-semibold">16 / 20</span>
-                </li>
-                <li class="flex items-center justify-between">
-                    <div>
-                        <p class="font-semibold text-gray-900">SQL & Jointures</p>
-                        <p class="text-gray-500">Termine le 02/01/2026</p>
-                    </div>
-                    <span class="text-red-600 font-semibold">9 / 20</span>
-                </li>
+                <?php endforeach; ?>
+                <?php if (empty($results)): ?>
+                <li class="text-center text-gray-500 py-4">Aucun quiz passé pour le moment</li>
+                <?php endif; ?>
             </ul>
         </div>
 
-        <!-- Resultats -->
+       
         <div class="bg-white rounded-xl shadow-sm p-5">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-gray-900">Tous les resultats</h2>
-                <span class="text-sm text-gray-500">Total: 6 quizzes</span>
+                <span class="text-sm text-gray-500">Total: <?= count($results) ?> quizzes</span>
             </div>
 
             <div class="overflow-x-auto">
@@ -80,48 +75,23 @@ $userName = $_SESSION['user_nom'];
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
+                        <?php foreach ($results as $result): 
+                            $percentage = round(($result['score'] / $result['total_questions']) * 100);
+                            $passed = $percentage >= 50;
+                        ?>
                         <tr>
-                            <td class="px-4 py-3 font-semibold text-gray-900">HTML & Semantique</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">Frontend</span></td>
-                            <td class="px-4 py-3 text-green-700 font-semibold">18 / 20</td>
-                            <td class="px-4 py-3 text-gray-500">04/01/2026</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Reussi</span></td>
+                            <td class="px-4 py-3 font-semibold text-gray-900"><?= htmlspecialchars($result['quiz_titre']) ?></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700"><?= htmlspecialchars($result['categorie_nom']) ?></span></td>
+                            <td class="px-4 py-3 <?= $passed ? 'text-green-700' : 'text-red-600' ?> font-semibold"><?= $result['score'] ?> / <?= $result['total_questions'] ?></td>
+                            <td class="px-4 py-3 text-gray-500"><?= date('d/m/Y', strtotime($result['created_at'])) ?></td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full <?= $passed ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>"><?= $passed ? 'Reussi' : 'Echoue' ?></span></td>
                         </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($results)): ?>
                         <tr>
-                            <td class="px-4 py-3 font-semibold text-gray-900">PHP OOP</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Backend</span></td>
-                            <td class="px-4 py-3 text-green-700 font-semibold">16 / 20</td>
-                            <td class="px-4 py-3 text-gray-500">03/01/2026</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Reussi</span></td>
+                            <td colspan="5" class="px-4 py-8 text-center text-gray-500">Aucun resultat disponible</td>
                         </tr>
-                        <tr>
-                            <td class="px-4 py-3 font-semibold text-gray-900">SQL & Jointures</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700">SQL</span></td>
-                            <td class="px-4 py-3 text-red-600 font-semibold">9 / 20</td>
-                            <td class="px-4 py-3 text-gray-500">02/01/2026</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700">Echoue</span></td>
-                        </tr>
-                        <tr>
-                            <td class="px-4 py-3 font-semibold text-gray-900">JS Fondamentaux</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-700">JavaScript</span></td>
-                            <td class="px-4 py-3 text-green-700 font-semibold">15 / 20</td>
-                            <td class="px-4 py-3 text-gray-500">30/12/2025</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Reussi</span></td>
-                        </tr>
-                        <tr>
-                            <td class="px-4 py-3 font-semibold text-gray-900">Design Systeme</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-pink-100 text-pink-700">UX/UI</span></td>
-                            <td class="px-4 py-3 text-green-700 font-semibold">17 / 20</td>
-                            <td class="px-4 py-3 text-gray-500">29/12/2025</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Reussi</span></td>
-                        </tr>
-                        <tr>
-                            <td class="px-4 py-3 font-semibold text-gray-900">Algorithmes</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700">Algo</span></td>
-                            <td class="px-4 py-3 text-red-600 font-semibold">8 / 20</td>
-                            <td class="px-4 py-3 text-gray-500">28/12/2025</td>
-                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700">Echoue</span></td>
-                        </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

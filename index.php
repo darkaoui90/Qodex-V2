@@ -6,7 +6,7 @@
 
 require_once 'config/database.php';
 
-// Si déjà connecté, rediriger selon le rôle
+
 if (isset($_SESSION['user_id'])) {
     if ($_SESSION['user_role'] === 'enseignant') {
         header('Location: pages/teacher/dashboard.php');
@@ -16,6 +16,6 @@ if (isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Sinon, rediriger vers la page de connexion
+
 header('Location: pages/auth/login.php');
 exit();
