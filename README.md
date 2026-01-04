@@ -1,12 +1,13 @@
 ﻿# Qodex-V2
 
 🎓 Quiz Platform – Student Interface (V2)
-📌 Description
+
+📌 Description :
 
 This project is the Student module (V2) of a Quiz Platform built with PHP (OOP).
 Students can browse categories, take active quizzes, submit answers securely, view scores, and access their personal history.
 
-🛠️ Tech Stack
+🛠️ Tech Stack : 
 
 PHP 8+ (OOP)
 
@@ -18,7 +19,7 @@ HTML / CSS
 
 Sessions & CSRF Protection
 
-🔐 Features
+🔐 Features : 
 
 Secure registration & login (hashed passwords)
 
@@ -34,7 +35,7 @@ Server-side score calculation
 
 View quiz results and personal history
 
-🧱 Core Classes
+🧱 Core Classes : 
 
 User (student)
 
@@ -77,7 +78,7 @@ attempts
 results
 
 🚀 Setup
-git clone https://github.com/your-username/quiz-platform-v2.git
+git clone https://github.com/darkaoui90/quiz-platform-v2.git
 
 
 Import the .sql file
@@ -86,6 +87,7 @@ Configure database connection
 
 Run on a local server (XAMPP / WAMP)
 
-📄 License
+📄 License :
 
 Educational project.
+
